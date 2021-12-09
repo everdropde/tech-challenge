@@ -1,0 +1,104 @@
+.fit {
+  min-height: calc(100vh - 88px);
+}
+
+/*Cookiebot*/
+
+#CybotCookiebotDialog {
+  box-shadow: rgb(0, 0, 0, 0.7) 2px 2px 14px 2px !important;
+  border-color: #ffffff !important;
+}
+#CybotCookiebotDialogBodyContent {
+  font-size: 10pt !important;
+}
+#CybotCookiebotDialog a,
+#CybotCookiebotDialog div,
+#CybotCookiebotDialogBodyContentTitle {
+  font-family: Semplicitapro, sans-serif !important;
+}
+#CybotCookiebotDialogBodyButtons #CybotCookiebotDialogBodyButtonAccept {
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 40px;
+  background-color: #ffff5a;
+  box-shadow: 0 0 10px -5px #3a3a3a;
+  color: #3a3a3a;
+  padding: 10px 20px !important;
+  font-size: 1.125rem !important;
+}
+#CybotCookiebotDialogBodyButtons #CybotCookiebotDialogBodyButtonAccept:hover {
+  background-color: #ffff5a !important;
+}
+#CybotCookiebotDialogBodyButtons #CybotCookiebotDialogBodyButtonDecline,
+#CybotCookiebotDialogBodyButtons #CybotCookiebotDialogBodyButtonDecline:hover {
+  text-decoration: underline;
+  color: #909090 !important;
+}
+#CybotCookiebotDialogBodyButtons .CybotCookiebotDialogBodyLink,
+#CybotCookiebotDialogBodyLevelDetailsButton {
+  margin-top: 14px !important;
+}
+.CookieDeclarationTypeHeader {
+  font-size: 10pt !important;
+}
+.CookieDeclarationTypeDescription {
+  font-size: 10pt !important;
+}
+.CookieDeclarationTableHeader {
+  font-size: 10pt !important;
+}
+.CookieDeclarationTableCell {
+  font-size: 10pt !important;
+}
+
+/*Sliders*/
+ul.slick-dots {
+  position: relative;
+  bottom: 0;
+  margin-top: 32px;
+}
+
+ul.slick-dots li {
+  margin: 0 2px;
+}
+
+ul.slick-dots li button:before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--text-primary);
+}
+
+.slick-slide .slide {
+  transition: transform 0.3s;
+}
+
+.slick-slide .slide .slide-content {
+  transition: box-shadow 0.05s;
+}
+
+@media all and (min-width: 769px) {
+  .slick-center .slide {
+    position: relative;
+    transform: translateY(-2rem);
+  }
+}
+
+@media all and (max-width: 768px) {
+  .slick-center .slide {
+    margin-bottom: 1.5rem;
+  }
+}
+
+.slick-center .slide .slide-content {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+@media all and (max-width: 768px) {
+  .is-container-ignore {
+    margin-left: -1.5rem;
+    width: 100vw !important;
+    padding: 0 ;
+  }
+}
