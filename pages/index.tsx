@@ -12,6 +12,7 @@ import Panel from 'components/ui/Panel'
 import PanelHeader from 'components/ui/PanelHeader'
 import ReviewSummary from 'components/sections/ReviewSummary'
 import Footer from 'components/sections/Footer'
+import StepInit from 'components/sections/StepInit'
 import ActionSheet from 'components/ActionSheet'
 import Coupon from 'components/Coupon'
 import PrimaryButton from 'components/ui/PrimaryButton'
@@ -71,7 +72,7 @@ const Home: FC = () => {
 
       <section className="bg-panel">
         <Container>
-          <ActionSheet />
+          <StepInit />
         </Container>
       </section>
 
@@ -156,7 +157,7 @@ const Home: FC = () => {
       </section>
       <section className="hidden bg-panel md:block">
         <Container>
-          <ActionSheet />
+          <StepInit />
         </Container>
       </section>
 
@@ -229,11 +230,13 @@ const Home: FC = () => {
       </section>
       <section className="hidden bg-panel md:block">
         <Container>
-          <ActionSheet />
+          <StepInit />
         </Container>
       </section>
 
       <Footer />
+
+      <ActionSheet />
     </div>
   )
 }

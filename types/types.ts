@@ -1,3 +1,5 @@
+import { WaterTypes } from '../data/hardness'
+
 export interface Item {
   title: string
   variant_title?: string
@@ -18,7 +20,7 @@ export interface BundleComponent extends Item {
   subscriptionOriginalPrice?: number
   starterSetOriginalPrice?: number // only used as reference to have unified source of data
   description?: string
-  variant_ids?: VariantIds
+  variant_ids?: Partial<Record<keyof typeof WaterTypes, string>>
   product_type: ProductType
   default_interval?: number
   order_interval_unit?: string
@@ -26,12 +28,6 @@ export interface BundleComponent extends Item {
   charge_interval_frequency?: number
   order_interval_frequency?: number
   short_description_first_deliver?: string
-}
-
-type VariantIds = {
-  hard: string
-  medium?: string
-  soft?: string
 }
 
 export type ProductType =
@@ -51,5 +47,5 @@ export type Stepper =
   | 'edit'
   | 'checkout'
 
-export type WaterHardness = keyof VariantIds
+export type WaterHardness = keyof typeof WaterTypes
 export type Bundle = BundleComponent[]
