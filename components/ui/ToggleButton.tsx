@@ -1,14 +1,12 @@
-import React, { FC, MouseEvent, ReactNode } from 'react'
+import React, { FC, HTMLAttributes, MouseEvent } from 'react'
 import cn from 'classnames'
 import { Button } from './Button'
 
 type ToggleButtonProps = {
-  className?: string
-  children: ReactNode
   onChange?: (event: MouseEvent<HTMLElement>, value: string) => void
   value: string
   selected?: boolean
-}
+} & HTMLAttributes<HTMLDivElement>
 
 const ToggleButton: FC<ToggleButtonProps> = ({
   className,

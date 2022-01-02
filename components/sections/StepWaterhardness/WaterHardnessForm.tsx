@@ -1,18 +1,28 @@
-import React, { Dispatch, FC, FormEvent, SetStateAction, useState } from 'react'
+import React, {
+  Dispatch,
+  FC,
+  FormEvent,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react'
 import { useAsyncFn } from 'react-use'
 import { WaterHardness } from 'types/types'
-import { Countries } from 'data/countries'
-import DetectZipCode from './DetectZipCode'
-import { Button } from '../../ui/Button'
+import { Countries, CountriesKeys } from 'data/countries'
+import useDetectLocationData from 'hooks/useDetectLocationData'
+import Location from '../../icons/Location'
 
-const waterHardnessGrades = [9, 14]
-const waterHardnessNames: Array<WaterHardness> = ['soft', 'medium', 'hard']
+const waterHardnessReference: Array<{ hardness: number; name: WaterHardness }> =
+  [
+    { hardness: 9, name: 'soft' },
+    { hardness: 14, name: 'medium' },
+  ]
 
 const getHardnessName = (hardness: number): WaterHardness => {
-  const position = waterHardnessGrades.findIndex((item) => hardness < item)
-  return waterHardnessNames[
-    position === -1 ? waterHardnessGrades.length : position
-  ]
+  return (
+    waterHardnessReference.find((ref) => hardness < ref.hardness)?.name ??
+    'hard'
+  )
 }
 
 type WaterHardnessFormProps = {
@@ -28,13 +38,19 @@ const WaterHardnessForm: FC<WaterHardnessFormProps> = ({
   openCalculator,
   setRecommendedWaterHardness,
 }) => {
-  const [countryCode, setCountryCode] = useState<keyof Countries>(
-    defaultCountryValue as keyof Countries
+  const [countryCode, setCountryCode] = useState<CountriesKeys>(
+    defaultCountryValue as CountriesKeys
   )
   const [zipCode, setZipCode] = useState<string>('')
-  const [googleZipCode, setGoogleZipCode] = useState<string | null>(null)
-  const [googleCountry, setGoogleCountry] = useState<string | null>(null)
-  const [isLocationDetected, setLocationDetected] = useState<boolean>(false)
+  const {
+    startGeolocationDetection,
+    locationData: {
+      zip: detectedZipCode,
+      countryCode: detectedCountry,
+      isLoading: isGeolocationLoading,
+      geolocationError,
+    },
+  } = useDetectLocationData()
 
   const [waterHardnessState, getWaterHardnessState] = useAsyncFn(
     async (countryCode, zip) => {
@@ -46,7 +62,13 @@ const WaterHardnessForm: FC<WaterHardnessFormProps> = ({
     []
   )
 
-  const makeZipCodeRequest = (country: keyof Countries, zip: string): void => {
+  useEffect(() => {
+    if (detectedZipCode && detectedCountry) {
+      makeZipCodeRequest(detectedCountry as CountriesKeys, detectedZipCode)
+    }
+  }, [detectedZipCode, detectedCountry])
+
+  const makeZipCodeRequest = (country: CountriesKeys, zip: string): void => {
     getWaterHardnessState(country, zip).then((result) => {
       const hardness = result?.[0]?.hardness ?? defaultCountryValue
       const error = result?.error
@@ -63,49 +85,19 @@ const WaterHardnessForm: FC<WaterHardnessFormProps> = ({
     e?.preventDefault()
     makeZipCodeRequest(countryCode, zipCode)
   }
+  const isDataLoading = isGeolocationLoading || waterHardnessState.loading
 
   return (
     <div>
-      <DetectZipCode
-        setGoogleZipCode={setGoogleZipCode}
-        setLocationDetected={setLocationDetected}
-        setGoogleCountry={setGoogleCountry}
-      />
-      {isLocationDetected && googleZipCode && googleCountry ? (
-        <>
-          <div>
-            Is your Zip code:{' '}
-            <span className="text-lg font-semibold">{googleZipCode}</span>
-          </div>
-          <div className="flex flex-wrap mt-2 gap-2">
-            <Button
-              onClick={() => {
-                setZipCode(googleZipCode)
-                setCountryCode(googleCountry as keyof Countries)
-                setLocationDetected(false)
-                makeZipCodeRequest(
-                  googleCountry as keyof Countries,
-                  googleZipCode
-                )
-              }}
-              className="w-10"
-            >
-              Yes
-            </Button>
-            <Button onClick={() => setLocationDetected(false)} className="w-10">
-              No
-            </Button>
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="mb-6 text-sm">
-            To determine your water hardness, please select country and enter
-            your zip code.
-          </div>
+      <div className="bg-gray-100 rounded-lg divide-y divide-divider">
+        <div className="px-5 py-3 text-xs">
+          To determine your water hardness, please select country and enter your
+          zip code.
+        </div>
 
+        <div className="px-5 py-3">
           <form onSubmit={handleSubmitZipCode}>
-            <div className="items-end grid gap-3 grid-cols-[150px,1fr,50px]">
+            <div className="items-end grid gap-3 grid-cols-[118px,1fr,50px] sm:grid-cols-[150px,1fr,50px]">
               <label htmlFor="country-input" className="block">
                 <span className="text-gray-700">Country</span>
                 {/* eslint-disable-next-line jsx-a11y/no-onchange */}
@@ -113,9 +105,10 @@ const WaterHardnessForm: FC<WaterHardnessFormProps> = ({
                   id="country-input"
                   value={countryCode as string}
                   onChange={(e) =>
-                    setCountryCode(e.target.value as keyof Countries)
+                    setCountryCode(e.target.value as CountriesKeys)
                   }
                   className="block w-full mt-1 text-xs border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                  disabled={isDataLoading}
                 >
                   {Object.keys(Countries).map((item) => {
                     return (
@@ -130,20 +123,23 @@ const WaterHardnessForm: FC<WaterHardnessFormProps> = ({
                 <span className="text-gray-700">Zip code</span>
                 <input
                   id="zip-input"
-                  type="text"
+                  type="number"
+                  min="0"
+                  step="1"
                   value={zipCode}
                   onChange={(e) => setZipCode(e.target.value)}
                   className="block w-full mt-1 text-xs border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                  disabled={isDataLoading}
                 />
               </label>
               <button
                 type="submit"
-                className="px-2 py-2 font-semibold rounded-lg hover:bg-gray-200 bg-light-gray"
+                className="px-2 py-2 font-semibold rounded-lg hover:bg-gray-300 bg-gray-200 disabled:opacity-50 disabled:hover:bg-gray-200 disabled:cursor-default"
+                disabled={isDataLoading}
               >
                 Ok
               </button>
             </div>
-            {waterHardnessState.loading && <p>Loading...</p>}
             {!waterHardnessState.loading &&
               waterHardnessState?.value?.error && (
                 <p className="mt-2 text-xs text-red-600 text-light">
@@ -151,8 +147,23 @@ const WaterHardnessForm: FC<WaterHardnessFormProps> = ({
                 </p>
               )}
           </form>
-        </>
-      )}
+        </div>
+
+        <div className="px-5 py-3">
+          <button
+            onClick={() => startGeolocationDetection(true)}
+            className="underline hover:no-underline"
+          >
+            <Location className="inline-block mt-[-2px] mr-1" />
+            Use my location
+          </button>
+          {geolocationError?.code && (
+            <p className="mt-2 text-xs text-red-600 text-light">
+              {geolocationError.message}
+            </p>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

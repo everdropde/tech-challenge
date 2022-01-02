@@ -4,3 +4,5 @@ export enum Countries {
   ch = 'Switzerland',
   ru = 'Russia',
 }
+
+export type CountriesKeys = keyof Countries

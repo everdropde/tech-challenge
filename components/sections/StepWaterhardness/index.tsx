@@ -1,5 +1,6 @@
 import type { Dispatch, FC, SetStateAction } from 'react'
 import React, { MouseEvent, useContext, useState } from 'react'
+import tailwindColors from 'tailwindcss/colors'
 import PrimaryButton from 'components/ui/PrimaryButton'
 import ToggleButtonGroup from 'components/ui/ToggleButtonGroup'
 import ToggleButton from 'components/ui/ToggleButton'
@@ -7,6 +8,7 @@ import { StepContext } from 'context/Step'
 import { WaterTypes } from 'data/hardness'
 import type { WaterHardness } from 'types/types'
 import WaterHardnessForm from './WaterHardnessForm'
+import Location from '../../icons/Location'
 
 type StepProps = {
   hardness: WaterHardness
@@ -41,17 +43,24 @@ const StepWaterhadrness: FC<StepProps> = () => {
           onChange={handleWaterHardness}
           value={waterHardness}
         >
-          {Object.keys(WaterTypes).map((item) => (
-            <ToggleButton
-              key={item}
-              value={item}
-              className={
-                recommendedWaterHardness === item ? '!border-green-600' : ''
-              }
-            >
-              {WaterTypes[item as keyof typeof WaterTypes]}
-            </ToggleButton>
-          ))}
+          {Object.keys(WaterTypes).map((item) => {
+            const isRecommended = recommendedWaterHardness === item
+            return (
+              <ToggleButton
+                key={item}
+                value={item}
+                className={isRecommended ? '!border-green-600' : ''}
+              >
+                {isRecommended && (
+                  <Location
+                    className="inline-block mr-1 mt-[-2px] w-[1.2em] h-[1.2em]"
+                    fill={tailwindColors.green[600]}
+                  />
+                )}
+                {WaterTypes[item as keyof typeof WaterTypes]}
+              </ToggleButton>
+            )
+          })}
         </ToggleButtonGroup>
 
         {!isCalculatorOpened ? (

@@ -47,7 +47,7 @@ export const ActionSheet: FC<Props> = () => {
         >
           <div
             onClick={childHandler}
-            className="w-full overflow-auto max-h-95vh bg-panel rounded-t-xl shadow-bottom-panel md:rounded-b-xl md:px-8"
+            className="w-full md:w-auto md:min-w-[50%] overflow-auto max-h-95vh bg-panel rounded-t-xl shadow-bottom-panel md:rounded-b-xl md:px-8"
           >
             {step === 'overview' && (
               <StepOverview
