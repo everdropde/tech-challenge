@@ -1,4 +1,5 @@
 module.exports = {
+  mode: 'jit',
   future: {
     purgeLayersByDefault: true,
     applyComplexClasses: true,
@@ -12,6 +13,9 @@ module.exports = {
       safelist: ['outline-none', 'rounded-xl'],
     },
   },
+  plugins: [
+    require('@tailwindcss/forms'),
+  ],
   theme: {
     container: {
       center: true,
