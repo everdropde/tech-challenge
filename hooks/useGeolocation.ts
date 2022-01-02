@@ -19,7 +19,7 @@ const useGeolocation = (
   startGeolocationDetection: Dispatch<SetStateAction<boolean>>
 } => {
   const [state, setState] = useState<GeoLocationSensorState>({
-    loading: true,
+    loading: false,
     accuracy: null,
     altitude: null,
     altitudeAccuracy: null,
@@ -55,6 +55,7 @@ const useGeolocation = (
 
   useEffect(() => {
     if (isGeolocationDetectionStarted) {
+      setState((oldState) => ({ ...oldState, loading: true }))
       navigator.geolocation.getCurrentPosition(onEvent, onEventError, options)
       watchId = navigator.geolocation.watchPosition(
         onEvent,

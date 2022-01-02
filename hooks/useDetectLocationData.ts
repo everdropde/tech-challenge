@@ -18,12 +18,21 @@ type LocationStateType = {
 
 function useDetectLocationData(): {
   startGeolocationDetection: Dispatch<SetStateAction<boolean>>
-  locationData: LocationStateType & { isLoading: boolean, geolocationError?: GeolocationPositionError }
+  locationData: LocationStateType & {
+    isLoading: boolean
+    geolocationError?: GeolocationPositionError
+  }
 } {
   const [locationData, setLocationData] = useState<LocationStateType>({
     isDetected: false,
   })
-  const { startGeolocationDetection, latitude, longitude, error: geolocationError } = useGeolocation()
+  const {
+    startGeolocationDetection,
+    latitude,
+    longitude,
+    error: geolocationError,
+    loading: isGeolocationLoading,
+  } = useGeolocation()
 
   const [mapGeocodeState, getMapGeocodeState] = useAsyncFn(async (lat, lng) => {
     const response = await fetch(
@@ -64,7 +73,11 @@ function useDetectLocationData(): {
 
   return {
     startGeolocationDetection,
-    locationData: { ...locationData, isLoading: mapGeocodeState.loading, geolocationError },
+    locationData: {
+      ...locationData,
+      isLoading: mapGeocodeState.loading || isGeolocationLoading,
+      geolocationError,
+    },
   }
 }
 
