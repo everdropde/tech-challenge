@@ -64,6 +64,8 @@ const WaterHardnessForm: FC<WaterHardnessFormProps> = ({
 
   useEffect(() => {
     if (detectedZipCode && detectedCountry) {
+      setCountryCode(detectedCountry)
+      setZipCode(detectedZipCode)
       makeZipCodeRequest(detectedCountry as CountriesKeys, detectedZipCode)
     }
   }, [detectedZipCode, detectedCountry])

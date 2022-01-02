@@ -33,7 +33,7 @@ const useGeolocation = (
     useState<boolean>(false)
   const [mounted, setMounted] = useState<boolean>(true)
   let watchId: number
-  console.log('state', state)
+
   const onEvent = (event: GeolocationPosition): void => {
     if (mounted) {
       setState({
